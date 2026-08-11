@@ -1,0 +1,30 @@
+{
+  "name": "sdg-turnos-medicos-canello-dipasquale",
+  "version": "1.0.0",
+  "description": "Un consultorio médico que hoy gestiona su agenda de forma manual (las secretarías cargan los turnos y los imprimen antes de la jornada) decide digitalizar su operación mediante una aplicación web. La clínica está creciendo y necesita una solución que acompañe ese crecimiento. El sistema deberá dar soporte a la operación diaria de la clínica: la gestión de sus usuarios, de la agenda médica y de los turnos de los pacientes. El alcance concreto de cada parte lo van a ir conociendo a medida que avance el proyecto.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yuima98/SdG-Turnos-Medicos-Canello-DiPasquale.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yuima98/SdG-Turnos-Medicos-Canello-DiPasquale/issues"
+  },
+  "homepage": "https://github.com/Yuima98/SdG-Turnos-Medicos-Canello-DiPasquale#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.23.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
