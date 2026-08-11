@@ -15,5 +15,8 @@ app.get('/health', async (req, res) => {
 }
 });
 
+const coberturaRoutes = require('./routes/coberturaRoutes');
+app.use('/coberturas', coberturaRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
