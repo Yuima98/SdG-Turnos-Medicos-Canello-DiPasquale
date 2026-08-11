@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const pool = require('../database/db');
 
 async function registro(req, res) {
@@ -30,4 +31,54 @@ async function registro(req, res) {
   }
 }
 
-module.exports = { registro };
+async function login(req, res) {
+  const { dni, password } = req.body;
+
+  if (!dni || !password) {
+    return res.status(400).json({ codigo: 400, estado: 'dni y contraseña son requeridos', datos: null });
+  }
+
+  try {
+    const [usuarios] = await pool.query('SELECT * FROM usuario WHERE dni = ?', [dni]);
+    if (usuarios.length === 0) {
+      return res.status(401).json({ codigo: 401, estado: 'credenciales inválidas', datos: null });
+    }
+
+    const usuario = usuarios[0];
+    const passwordValida = await bcrypt.compare(password, usuario.password);
+    if (!passwordValida) {
+      return res.status(401).json({ codigo: 401, estado: 'credenciales inválidas', datos: null });
+    }
+
+    const token = jwt.sign(
+      { id: usuario.id, rol: usuario.rol, id_sede: usuario.id_sede },
+      process.env.JWT_SECRET,
+      { expiresIn: '8h' }
+    );
+
+    res.json({ codigo: 200, estado: 'ok', datos: { token } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ codigo: 500, estado: 'error al iniciar sesión', datos: null });
+  }
+}
+
+async function perfil(req, res) {
+  try {
+    const [usuarios] = await pool.query(
+      'SELECT id, nombre, apellido, dni, email, fecha_nacimiento, telefono, rol, id_sede, id_cobertura FROM usuario WHERE id = ?',
+      [req.usuario.id]
+    );
+
+    if (usuarios.length === 0) {
+      return res.status(404).json({ codigo: 404, estado: 'usuario no encontrado', datos: null });
+    }
+
+    res.json({ codigo: 200, estado: 'ok', datos: usuarios[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ codigo: 500, estado: 'error al obtener perfil', datos: null });
+  }
+}
+
+module.exports = { registro, login, perfil };

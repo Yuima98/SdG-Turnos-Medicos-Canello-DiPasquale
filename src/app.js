@@ -18,8 +18,17 @@ app.get('/health', async (req, res) => {
 const coberturaRoutes = require('./routes/coberturaRoutes');
 app.use('/coberturas', coberturaRoutes);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
-
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({ codigo: 404, estado: 'recurso no encontrado', datos: null });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ codigo: 500, estado: 'error interno del servidor', datos: null });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
