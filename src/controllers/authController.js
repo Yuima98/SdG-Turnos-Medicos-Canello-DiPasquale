@@ -5,6 +5,10 @@ const pool = require('../database/db');
 async function registro(req, res) {
   const { nombre, apellido, dni, email, password, fecha_nacimiento, telefono, id_cobertura } = req.body;
 
+  if (!nombre || !apellido || !dni || !email || !password || !fecha_nacimiento || !telefono || !id_cobertura) {
+    return res.status(400).json({ codigo: 400, estado: 'faltan campos requeridos', datos: null });
+  }
+
   try {
     const [dniExistente] = await pool.query('SELECT id FROM usuario WHERE dni = ?', [dni]);
     if (dniExistente.length > 0) {
@@ -14,6 +18,11 @@ async function registro(req, res) {
     const [emailExistente] = await pool.query('SELECT id FROM usuario WHERE email = ?', [email]);
     if (emailExistente.length > 0) {
       return res.status(409).json({ codigo: 409, estado: 'el email ya está registrado', datos: null });
+    }
+
+    const [coberturaExistente] = await pool.query('SELECT id FROM cobertura WHERE id = ?', [id_cobertura]);
+    if (coberturaExistente.length === 0) {
+      return res.status(400).json({ codigo: 400, estado: 'la cobertura indicada no existe', datos: null });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
