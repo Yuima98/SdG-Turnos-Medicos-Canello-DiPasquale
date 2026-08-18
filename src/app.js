@@ -21,6 +21,9 @@ app.use('/coberturas', coberturaRoutes);
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
 
+const sedeRoutes = require('./routes/sedeRoutes');
+app.use('/sedes', sedeRoutes);
+
 app.use((req, res) => {
   res.status(404).json({ codigo: 404, estado: 'recurso no encontrado', datos: null });
 });
@@ -28,6 +31,8 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ codigo: 500, estado: 'error interno del servidor', datos: null });
+
+
 });
 
 const PORT = process.env.PORT || 3000;
