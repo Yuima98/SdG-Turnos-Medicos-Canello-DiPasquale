@@ -47,6 +47,18 @@ async function modificarSede(req, res) {
 async function bajaSede(req, res) {
   const { id } = req.params;
   try {
+    const [usuariosAsociados] = await pool.query(
+      "SELECT id FROM usuario WHERE id_sede = ? AND rol IN ('medico', 'operador')",
+      [id]
+    );
+    if (usuariosAsociados.length > 0) {
+      return res.status(409).json({
+        codigo: 409,
+        estado: 'no se puede eliminar la sede: tiene médicos u operadores asociados',
+        datos: null
+      });
+    }
+
     const [agendaAsociada] = await pool.query(
       'SELECT id FROM agenda WHERE id_sede = ?',
       [id]
