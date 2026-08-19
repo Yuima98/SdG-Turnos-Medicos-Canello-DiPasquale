@@ -9,7 +9,7 @@
 ## 2. Clonar e instalar
 
 ```bash
-git clone <url-del-repo>
+git clone https://github.com/Yuima98/SdG-Turnos-Medicos-Canello-DiPasquale
 cd SdG-Turnos-Medicos-Canello-DiPasquale
 git checkout entrega-backend-2
 npm install
@@ -84,6 +84,18 @@ Importar la colección incluida en el repo:
 
 - `SdG-Turnos-Medicos_postman_collection.json`
 
-Es autocontenida: trae sus propios valores por defecto (`base_url`, DNIs, `seed_password`, etc.) como variables de colección, y los tokens de login se guardan ahí mismo (`token_admin`, `token_medico`, `token_operador`).
+Es autocontenida: trae sus propios valores por defecto (`base_url`, DNIs, `seed_password`, etc.) como variables de colección, y los tokens de login se guardan ahí mismo (`token`, `token_admin`, `token_medico`, `token_operador`).
 
-Correr primero las requests de **"Auth - Login por rol (Semana 2)"** (usan los usuarios habilitados en el paso 5). Para correr todo de una, usar el **Runner** de Postman sobre la colección completa, respetando el orden en que aparecen las carpetas (Auth primero).
+Para correr todo de una, usar el **Runner** de Postman sobre la colección completa. El orden ya viene resuelto en la propia colección.
+
+## 8. Reiniciar los datos antes de repetir el testing
+
+Cada corrida de la colección crea datos nuevos (paciente registrado, sede/especialidad/cobertura/agenda dados de alta, etc.). Para repetir el testing desde cero sin arrastrar esos datos, correr `reset_test_data.sql` (incluido en el repo) contra la base **antes de cada corrida** del Runner:
+
+- **DBeaver:** abrir `reset_test_data.sql`, seleccionar todo y ejecutar con **Execute SQL Script** (`Alt+X`) — no con `Ctrl+Enter`, que solo corre una sentencia y tira error de sintaxis al toparse con el `;` del script completo.
+- **Consola:**
+  ```bash
+  mysql -u root -p clinica_bdd < reset_test_data.sql
+  ```
+
+El script vacía todas las tablas y vuelve a cargar la seed data con los mismos IDs del dump original (incluyendo `admin`/`medico`/`operador` ya con la password `Password123!` habilitada, sin necesidad de correr el `UPDATE` del paso 5 de nuevo). Como los AUTO_INCREMENT quedan en el mismo punto de partida en cada reseteo, los IDs que genera Postman durante el testing (paciente, sede, especialidad, cobertura, agenda) también se repiten igual corrida tras corrida.
