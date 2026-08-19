@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const coberturaRoutes = require('./routes/coberturaRoutes');
 const sedeRoutes = require('./routes/sedeRoutes');
 const especialidadRoutes = require('./routes/especialidadRoutes');
+const agendaRoutes = require('./routes/agendaRoutes');
 
 const app = express();
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use('/auth', authRoutes);
 app.use('/coberturas', coberturaRoutes);
 app.use('/sedes', sedeRoutes);
 app.use('/especialidades', especialidadRoutes);
+app.use('/agenda', agendaRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ codigo: 404, estado: 'recurso no encontrado', datos: null });
