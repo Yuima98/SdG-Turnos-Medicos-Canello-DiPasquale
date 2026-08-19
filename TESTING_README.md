@@ -29,7 +29,7 @@ Importar el script provisto:
 mysql -u root -p clinica_bdd < clinica_bdd.sql
 ```
 
-> **Nota:** las contraseñas que trae el dump (`usuario.password`) son hashes de ejemplo (`$2b$10$hashdeejemplo...`), no corresponden a ninguna contraseña real — no se puede loguear con esos usuarios tal cual vienen. Ver el paso 5 para crear un usuario admin de prueba.
+> **Nota:** las contraseñas que trae el dump (`usuario.password`) son hashes de ejemplo (`$2b$10$hashdeejemplo...`), no corresponden a ninguna contraseña real — no se puede loguear con esos usuarios tal cual vienen. Ver el paso 5 para habilitarlos.
 
 ## 4. Variables de entorno
 
@@ -50,14 +50,15 @@ Para generar un `JWT_SECRET` random:
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-## 5. Crear un usuario admin de prueba
+## 5. Habilitar los usuarios semilla
 
-El endpoint de registro público (`POST /auth/registro`) asigna automáticamente el rol `paciente`, así que un usuario `admin` se carga directo en la base. Contraseña de prueba: `admin1234`.
+El script provisto trae usuarios de ejemplo con contraseñas placeholder (`$2b$10$hashdeejemploN`), que no sirven para loguearse. Antes de correr la colección hay que actualizarles la contraseña a los tres roles administrativos que usa (por DNI):
 
 ```sql
-INSERT INTO usuario (nombre, apellido, dni, email, password, fecha_nacimiento, telefono, rol)
-VALUES ('Admin', 'Sistema', '99999999', 'admin@test.com', '$2b$10$OjUrPKoKnAZ9.jS3QuGQIuq6ABdGJTqcVyFC2IxzJQupGJoJZg7Fm', '1990-01-01', '3424000000', 'admin');
+UPDATE usuario SET password = '$2b$10$XslK5zKRxAI04qv5hUmfXeoUsOmB49oHcTpwlr5mAcMkSNMvaQMr.' WHERE dni IN ('18222333', '20111222', '15200548');
 ```
+
+Con eso, `admin` (DNI `18222333`), `medico` (DNI `20111222`) y `operador` (DNI `15200548`) quedan logueables con la contraseña `Password123!`.
 
 ## 6. Levantar el servidor
 
@@ -79,13 +80,10 @@ Respuesta esperada:
 
 ## 7. Probar con Postman
 
-Importar los dos archivos incluidos en el repo:
+Importar la colección incluida en el repo:
 
-- `Clinica-Backend.postman_collection.json`
-- `Clinica-Local.postman_environment.json`
+- `SdG-Turnos-Medicos_postman_collection.json`
 
-Seleccionar el environment **"Clinica - Local"** como activo (arriba a la derecha en Postman).
+Es autocontenida: trae sus propios valores por defecto (`base_url`, DNIs, `seed_password`, etc.) como variables de colección, y los tokens de login se guardan ahí mismo (`token_admin`, `token_medico`, `token_operador`).
 
-Correr primero la request **Login Admin** (usa el usuario creado en el paso 5) — guarda el token automáticamente en la variable de entorno `token`, que usan todas las demás requests protegidas.
-
-Para correr todo de una, usar el **Runner** de Postman sobre la colección completa, respetando el orden en que aparecen las carpetas (Auth primero).
+Correr primero las requests de **"Auth - Login por rol (Semana 2)"** (usan los usuarios habilitados en el paso 5). Para correr todo de una, usar el **Runner** de Postman sobre la colección completa, respetando el orden en que aparecen las carpetas (Auth primero).
