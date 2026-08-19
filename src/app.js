@@ -2,6 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const pool = require('./database/db');
 
+const authRoutes = require('./routes/authRoutes');
+const coberturaRoutes = require('./routes/coberturaRoutes');
+const sedeRoutes = require('./routes/sedeRoutes');
+const especialidadRoutes = require('./routes/especialidadRoutes');
+
 const app = express();
 app.use(express.json());
 
@@ -10,19 +15,15 @@ app.get('/health', async (req, res) => {
     await pool.query('SELECT 1');
     res.json({ codigo: 200, estado: 'ok', datos: null });
   } catch (err) {
-  console.error(err);
-  res.status(500).json({ codigo: 500, estado: 'error de conexión a la base', datos: null });
-}
+    console.error(err);
+    res.status(500).json({ codigo: 500, estado: 'error de conexión a la base', datos: null });
+  }
 });
 
-const coberturaRoutes = require('./routes/coberturaRoutes');
-app.use('/coberturas', coberturaRoutes);
-
-const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
-
-const sedeRoutes = require('./routes/sedeRoutes');
+app.use('/coberturas', coberturaRoutes);
 app.use('/sedes', sedeRoutes);
+app.use('/especialidades', especialidadRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ codigo: 404, estado: 'recurso no encontrado', datos: null });
@@ -31,8 +32,6 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ codigo: 500, estado: 'error interno del servidor', datos: null });
-
-
 });
 
 const PORT = process.env.PORT || 3000;
