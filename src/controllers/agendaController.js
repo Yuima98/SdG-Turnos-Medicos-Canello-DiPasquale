@@ -1,4 +1,5 @@
 const pool = require('../database/db');
+const { formatearFecha } = require('../utils/horarios');
 
 async function altaAgenda(req, res) {
   const { hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede } = req.body;
@@ -39,7 +40,7 @@ async function altaAgenda(req, res) {
 }
 
 async function listarAgenda(req, res) {
-  const { id_medico, id_sede, fecha } = req.query;
+  const { id_medico, id_sede, id_especialidad, fecha } = req.query;
   const condiciones = [];
   const valores = [];
 
@@ -56,6 +57,11 @@ async function listarAgenda(req, res) {
     valores.push(id_sede);
   }
 
+  if (id_especialidad) {
+    condiciones.push('id_especialidad = ?');
+    valores.push(id_especialidad);
+  }
+
   if (fecha) {
     condiciones.push('fecha = ?');
     valores.push(fecha);
@@ -65,10 +71,11 @@ async function listarAgenda(req, res) {
 
   try {
     const [rows] = await pool.query(
-      `SELECT id, hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede FROM agenda ${where}`,
+      `SELECT id, hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede FROM agenda ${where} ORDER BY fecha ASC, hora_entrada ASC`,
       valores
     );
-    res.json({ codigo: 200, estado: 'ok', datos: rows });
+    const datos = rows.map((r) => ({ ...r, fecha: formatearFecha(r.fecha) }));
+    res.json({ codigo: 200, estado: 'ok', datos });
   } catch (err) {
     console.error(err);
     res.status(500).json({ codigo: 500, estado: 'error al listar agenda', datos: null });
