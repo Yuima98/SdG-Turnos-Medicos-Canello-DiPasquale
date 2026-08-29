@@ -88,6 +88,12 @@ Es autocontenida: trae sus propios valores por defecto (`base_url`, DNIs, `seed_
 
 Para correr todo de una, usar el **Runner** de Postman sobre la colección completa. El orden ya viene resuelto en la propia colección.
 
+La colección incluye las carpetas de Semana 3 (**Turnos**, **Historial clínico** y **Notificaciones**), que se apoyan en la agenda `id=2` del seed (médico `id=3`, sede `id=1`, fecha `2025-10-20`, 15:00 a 20:00hs) y corren después de "Agenda médica". Casos destacados para el entregable:
+
+- `Turno - Alta (paciente) horario no disponible -> 409`: turno rechazado por horario fuera de agenda.
+- `Turno - Cancelación (paciente, turno propio)`: cancela un turno y dispara la notificación correspondiente (verificable en la carpeta **Notificaciones**).
+- `Historial - Alta (médico, turno atendido)`: registra el historial clínico de un turno recién marcado como atendido, quedando ambos asociados por `id_turno`.
+
 ## 8. Reiniciar los datos antes de repetir el testing
 
 Cada corrida de la colección crea datos nuevos (paciente registrado, sede/especialidad/cobertura/agenda dados de alta, etc.). Para repetir el testing desde cero sin arrastrar esos datos, correr `reset_test_data.sql` (incluido en el repo) contra la base **antes de cada corrida** del Runner:

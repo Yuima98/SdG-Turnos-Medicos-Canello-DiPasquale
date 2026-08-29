@@ -1,7 +1,7 @@
 {
 	"info": {
-		"name": "SdG Turnos Médicos - Backend Semana 1 y 2",
-		"description": "Semana 1: autenticación (registro, login, perfil) y coberturas (lectura pública). Semana 2: CRUD de sedes, especialidades, coberturas (admin) y agenda médica, protegidos por rol.\n\nNota: los usuarios `admin`, `medico` y `operador` del seed (clinica_bdd.sql) traen contraseñas placeholder (`$2b$10$hashdeejemploN`) que no corresponden a ninguna contraseña real. Antes de correr las carpetas de Semana 2 hay que generar un hash bcrypt válido para `seed_password` y actualizar la columna `password` de esos usuarios en la base (por dni: admin 18222333, medico 20111222, operador 15200548), o registrar/loguear usuarios propios con esos roles.",
+		"name": "SdG Turnos Médicos - Backend Semana 1, 2 y 3",
+		"description": "Semana 1: autenticación (registro, login, perfil) y coberturas (lectura pública). Semana 2: CRUD de sedes, especialidades, coberturas (admin) y agenda médica, protegidos por rol.\n\nNota: los usuarios `admin`, `medico` y `operador` del seed (clinica_bdd.sql) traen contraseñas placeholder (`$2b$10$hashdeejemploN`) que no corresponden a ninguna contraseña real. Antes de correr las carpetas de Semana 2 hay que generar un hash bcrypt válido para `seed_password` y actualizar la columna `password` de esos usuarios en la base (por dni: admin 18222333, medico 20111222, operador 15200548), o registrar/loguear usuarios propios con esos roles.\n\nSemana 3: alta/cancelación/atención de turnos (con validación de agenda, superposición y notificaciones), historial clínico y notificaciones. Casos destacados: \"Turno - Alta (paciente) horario no disponible -> 409\" (turno rechazado por horario), \"Turno - Cancelación (paciente, propio)\" (turno cancelado que genera notificación) y \"Historial - Alta (médico, turno atendido)\" (turno atendido con su historial clínico asociado).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"variable": [
@@ -64,6 +64,30 @@
 		{
 			"key": "id_agenda",
 			"value": ""
+		},
+		{
+			"key": "id_paciente_propio",
+			"value": ""
+		},
+		{
+			"key": "id_turno",
+			"value": ""
+		},
+		{
+			"key": "id_turno_sede",
+			"value": ""
+		},
+		{
+			"key": "id_turno_atender",
+			"value": ""
+		},
+		{
+			"key": "id_historial",
+			"value": ""
+		},
+		{
+			"key": "id_notificacion",
+			"value": ""
 		}
 	],
 	"item": [
@@ -83,7 +107,9 @@
 									"  pm.expect(json).to.have.property('codigo');",
 									"  pm.expect(json).to.have.property('estado');",
 									"  pm.expect(json).to.have.property('datos');",
-									"});"
+									"});",
+									"const jsonRegistro = pm.response.json();",
+									"if (jsonRegistro.datos && jsonRegistro.datos.id) { pm.collectionVariables.set('id_paciente_propio', jsonRegistro.datos.id); }"
 								],
 								"type": "text/javascript"
 							}
@@ -1310,6 +1336,966 @@
 							"path": [
 								"agenda",
 								"{{id_agenda}}"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Turnos (alta, cancelación, atención)",
+			"description": "Semana 3. Usa la agenda id=2 del seed (médico id=3 / sede id=1, fecha 2025-10-20, 15:00 a 20:00hs).",
+			"item": [
+				{
+					"name": "Turno - Alta (paciente) horario no disponible -> 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 409', function () { pm.response.to.have.status(409); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"21:00\",\n  \"nota\": \"Fuera del horario de agenda\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Turno - Alta (paciente) OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 201', function () { pm.response.to.have.status(201); });",
+									"const json = pm.response.json();",
+									"if (json.datos && json.datos.id) { pm.collectionVariables.set('id_turno', json.datos.id); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"16:00\",\n  \"nota\": \"Consulta de rutina\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Turno - Alta (paciente) superpuesto con turno confirmado -> 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 409', function () { pm.response.to.have.status(409); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"16:15\",\n  \"nota\": \"Se superpone con el anterior\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Turno - Alta (paciente) sin nota -> 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 400', function () { pm.response.to.have.status(400); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"18:00\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Turno - Alta (paciente) OK turno adicional para cancelación por operador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 201', function () { pm.response.to.have.status(201); });",
+									"const json = pm.response.json();",
+									"if (json.datos && json.datos.id) { pm.collectionVariables.set('id_turno_sede', json.datos.id); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"16:30\",\n  \"nota\": \"Turno para probar cancelación por operador\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Turno - Alta (operador en representación del paciente) OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 201', function () { pm.response.to.have.status(201); });",
+									"const json = pm.response.json();",
+									"if (json.datos && json.datos.id) { pm.collectionVariables.set('id_turno_atender', json.datos.id); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_operador}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"17:00\",\n  \"nota\": \"Turno cargado por el operador\",\n  \"dni_paciente\": \"30111222\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Turno - Listado \"mis turnos\" (paciente, orden por más próximo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('está ordenado del más próximo al menos próximo', function () {",
+									"  const json = pm.response.json();",
+									"  const claves = json.datos.map(t => `${t.fecha}T${t.hora}`);",
+									"  const ordenado = [...claves].sort();",
+									"  pm.expect(claves).to.eql(ordenado);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Listado programado (médico) sin fecha -> 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 400', function () { pm.response.to.have.status(400); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Listado programado (médico) con fecha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('todos los turnos son del médico logueado', function () {",
+									"  const json = pm.response.json();",
+									"  const idPropio = Number(pm.collectionVariables.get('id_medico_propio'));",
+									"  json.datos.forEach(t => pm.expect(t.id_medico).to.eql(idPropio));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno?fecha=2025-10-20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-10-20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Listado por sede (operador) con fecha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('todos los turnos son de la sede 1', function () {",
+									"  const json = pm.response.json();",
+									"  json.datos.forEach(t => pm.expect(t.id_sede).to.eql(1));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_operador}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno?fecha=2025-10-20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2025-10-20"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Cancelación (paciente, turno propio) -> genera notificación",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno/{{id_turno}}/cancelar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno",
+								"{{id_turno}}",
+								"cancelar"
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Cancelación (turno ya cancelado) -> 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 409', function () { pm.response.to.have.status(409); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno/{{id_turno}}/cancelar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno",
+								"{{id_turno}}",
+								"cancelar"
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Cancelación (operador, turno de su sede)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_operador}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno/{{id_turno_sede}}/cancelar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno",
+								"{{id_turno_sede}}",
+								"cancelar"
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Atención (rol no autorizado, operador) -> 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 403', function () { pm.response.to.have.status(403); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_operador}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno/{{id_turno_atender}}/atender",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno",
+								"{{id_turno_atender}}",
+								"atender"
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Atención (médico, turno propio) -> genera notificación",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno/{{id_turno_atender}}/atender",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno",
+								"{{id_turno_atender}}",
+								"atender"
+							]
+						}
+					}
+				},
+				{
+					"name": "Turno - Atención (turno ya atendido) -> 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 409', function () { pm.response.to.have.status(409); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/turno/{{id_turno_atender}}/atender",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno",
+								"{{id_turno_atender}}",
+								"atender"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Historial clínico",
+			"description": "Semana 3. Depende de que \"Turnos\" ya haya marcado {{id_turno_atender}} como atendido.",
+			"item": [
+				{
+					"name": "Historial - Alta (médico, turno atendido) -> turno atendido con historial asociado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 201', function () { pm.response.to.have.status(201); });",
+									"const json = pm.response.json();",
+									"if (json.datos && json.datos.id) { pm.collectionVariables.set('id_historial', json.datos.id); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/historial-clinico",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"historial-clinico"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_turno\": {{id_turno_atender}},\n  \"diagnostico\": \"Control sin hallazgos\",\n  \"tratamiento\": \"Ninguno\",\n  \"observaciones\": \"Paciente estable\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Historial - Alta (duplicado sobre el mismo turno) -> 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 409', function () { pm.response.to.have.status(409); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/historial-clinico",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"historial-clinico"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_turno\": {{id_turno_atender}},\n  \"diagnostico\": \"Otro diagnóstico\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Historial - Alta (turno no atendido) -> 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 409', function () { pm.response.to.have.status(409); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/historial-clinico",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"historial-clinico"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_turno\": {{id_turno_sede}},\n  \"diagnostico\": \"No debería poder cargarse\"\n}"
+						}
+					},
+					"description": "id_turno_sede quedó en estado cancelado, nunca fue atendido."
+				},
+				{
+					"name": "Historial - Consulta (paciente, propio historial completo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/historial-clinico/paciente/{{id_paciente_propio}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"historial-clinico",
+								"paciente",
+								"{{id_paciente_propio}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Historial - Consulta (paciente intenta ver historial de otro) -> 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 403', function () { pm.response.to.have.status(403); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/historial-clinico/paciente/999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"historial-clinico",
+								"paciente",
+								"999"
+							]
+						}
+					}
+				},
+				{
+					"name": "Historial - Consulta (médico, solo turnos que él atendió)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('todos los registros fueron atendidos por el médico logueado', function () {",
+									"  const json = pm.response.json();",
+									"  const idPropio = Number(pm.collectionVariables.get('id_medico_propio'));",
+									"  json.datos.forEach(h => pm.expect(h.id_medico).to.eql(idPropio));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/historial-clinico/paciente/{{id_paciente_propio}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"historial-clinico",
+								"paciente",
+								"{{id_paciente_propio}}"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Notificaciones",
+			"description": "Semana 3. Depende de los eventos generados en \"Turnos\" (confirmación, cancelación, atención).",
+			"item": [
+				{
+					"name": "Notificaciones - Listado (paciente, de más reciente a más antigua)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('está ordenado de más reciente a más antigua', function () {",
+									"  const json = pm.response.json();",
+									"  const fechas = json.datos.map(n => new Date(n.fecha).getTime());",
+									"  for (let i = 1; i < fechas.length; i++) { pm.expect(fechas[i - 1]).to.be.at.least(fechas[i]); }",
+									"});",
+									"const json = pm.response.json();",
+									"if (json.datos && json.datos.length > 0) { pm.collectionVariables.set('id_notificacion', json.datos[0].id); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notificaciones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notificaciones"
+							]
+						}
+					}
+				},
+				{
+					"name": "Notificaciones - Marcar como leída (propia)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notificaciones/{{id_notificacion}}/leida",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notificaciones",
+								"{{id_notificacion}}",
+								"leida"
+							]
+						}
+					}
+				},
+				{
+					"name": "Notificaciones - Marcar como leída (de otro usuario) -> 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 403', function () { pm.response.to.have.status(403); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notificaciones/{{id_notificacion}}/leida",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notificaciones",
+								"{{id_notificacion}}",
+								"leida"
 							]
 						}
 					}
