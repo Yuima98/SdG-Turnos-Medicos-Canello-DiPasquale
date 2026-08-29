@@ -7,7 +7,9 @@ const coberturaRoutes = require('./routes/coberturaRoutes');
 const sedeRoutes = require('./routes/sedeRoutes');
 const especialidadRoutes = require('./routes/especialidadRoutes');
 const agendaRoutes = require('./routes/agendaRoutes');
-const turnoRoutes = require('./routes/turnoRoutes'); 
+const turnoRoutes = require('./routes/turnoRoutes');
+const historialRoutes = require('./routes/historialRoutes');
+const notificacionRoutes = require('./routes/notificacionRoutes');
 
 const app = express();
 app.use(express.json());
@@ -28,6 +30,8 @@ app.use('/sedes', sedeRoutes);
 app.use('/especialidades', especialidadRoutes);
 app.use('/agenda', agendaRoutes);
 app.use('/turno', turnoRoutes);
+app.use('/historial-clinico', historialRoutes);
+app.use('/notificaciones', notificacionRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ codigo: 404, estado: 'recurso no encontrado', datos: null });
