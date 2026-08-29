@@ -21,4 +21,18 @@ function minutosEntre(horaInicio, horaFin) {
   return aMinutos(horaFin) - aMinutos(horaInicio);
 }
 
-module.exports = { aMinutos, sumarMinutos, minutosEntre };
+/**
+ * mysql2 devuelve las columnas DATE como objetos Date (en hora local);
+ * esto arma el "YYYY-MM-DD" usando los getters locales para no correrse de día.
+ */
+function formatearFecha(fecha) {
+  if (fecha instanceof Date) {
+    const y = fecha.getFullYear();
+    const m = String(fecha.getMonth() + 1).padStart(2, '0');
+    const d = String(fecha.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  return fecha;
+}
+
+module.exports = { aMinutos, sumarMinutos, minutosEntre, formatearFecha };

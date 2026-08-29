@@ -1,5 +1,5 @@
 const pool = require('../database/db');
-const { sumarMinutos, minutosEntre } = require('../utils/horarios');
+const { sumarMinutos, minutosEntre, formatearFecha } = require('../utils/horarios');
 
 /**
  * Alta de turno (POST /turno). Rol paciente u operador.
@@ -110,7 +110,7 @@ async function altaTurno(req, res) {
     // 7) Notificación al paciente
     await pool.query(
       "INSERT INTO notificacion (id_usuario, tipo, mensaje, leida, fecha) VALUES (?, 'turno_confirmado', ?, 0, NOW())",
-      [id_paciente, `Tu turno del ${agenda.fecha} a las ${hora} fue confirmado.`]
+      [id_paciente, `Tu turno del ${formatearFecha(agenda.fecha)} a las ${hora} fue confirmado.`]
     );
 
     res.status(201).json({ codigo: 201, estado: 'ok', datos: { id: resultado.insertId } });
