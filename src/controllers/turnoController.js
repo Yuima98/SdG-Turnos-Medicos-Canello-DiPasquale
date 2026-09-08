@@ -20,6 +20,10 @@ async function altaTurno(req, res) {
     return res.status(400).json({ codigo: 400, estado: 'faltan campos requeridos', datos: null });
   }
 
+  if (nota.length > 40) {
+    return res.status(400).json({ codigo: 400, estado: 'la nota no puede superar los 40 caracteres', datos: null });
+  }
+
   try {
     // 1) Resolver id_paciente según el rol
     let id_paciente;

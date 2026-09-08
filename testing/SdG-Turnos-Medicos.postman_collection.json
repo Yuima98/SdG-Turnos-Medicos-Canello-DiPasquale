@@ -136,7 +136,8 @@
 								"auth",
 								"registro"
 							]
-						}
+						},
+						"description": "POST /auth/registro\nRol: público (sin autenticación). Crea siempre un usuario con rol 'paciente'.\nParámetros: ninguno.\nBody (JSON): nombre, apellido, dni, email, password, fecha_nacimiento, telefono, id_cobertura (todos obligatorios).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos / la cobertura indicada no existe\n- 409 el DNI ya está registrado / el email ya está registrado\n- 500 error al registrar usuario"
 					}
 				},
 				{
@@ -175,7 +176,8 @@
 								"auth",
 								"login"
 							]
-						}
+						},
+						"description": "POST /auth/login\nRol: público (sin autenticación).\nParámetros: ninguno.\nBody (JSON): dni, password (obligatorios).\nRespuestas:\n- 200 ok, datos: { token } (JWT, expira en 8h; incluye id, rol e id_sede)\n- 400 dni y contraseña son requeridos\n- 401 credenciales inválidas\n- 500 error al iniciar sesión"
 					}
 				}
 			]
@@ -220,7 +222,8 @@
 								"auth",
 								"login"
 							]
-						}
+						},
+						"description": "POST /auth/login\nRol: público (sin autenticación).\nParámetros: ninguno.\nBody (JSON): dni, password (obligatorios).\nRespuestas:\n- 200 ok, datos: { token } (JWT, expira en 8h; incluye id, rol e id_sede)\n- 400 dni y contraseña son requeridos\n- 401 credenciales inválidas\n- 500 error al iniciar sesión"
 					}
 				},
 				{
@@ -259,7 +262,8 @@
 								"auth",
 								"login"
 							]
-						}
+						},
+						"description": "POST /auth/login\nRol: público (sin autenticación).\nParámetros: ninguno.\nBody (JSON): dni, password (obligatorios).\nRespuestas:\n- 200 ok, datos: { token } (JWT, expira en 8h; incluye id, rol e id_sede)\n- 400 dni y contraseña son requeridos\n- 401 credenciales inválidas\n- 500 error al iniciar sesión"
 					}
 				},
 				{
@@ -298,7 +302,8 @@
 								"auth",
 								"login"
 							]
-						}
+						},
+						"description": "POST /auth/login\nRol: público (sin autenticación).\nParámetros: ninguno.\nBody (JSON): dni, password (obligatorios).\nRespuestas:\n- 200 ok, datos: { token } (JWT, expira en 8h; incluye id, rol e id_sede)\n- 400 dni y contraseña son requeridos\n- 401 credenciales inválidas\n- 500 error al iniciar sesión"
 					}
 				}
 			]
@@ -345,7 +350,8 @@
 							"path": [
 								"sedes"
 							]
-						}
+						},
+						"description": "POST /sedes\nRol: admin.\nBody (JSON): nombre, direccion, telefono.\nRespuestas:\n- 201 ok, datos: { id }\n- 403 rol no autorizado\n- 500 error al crear sede"
 					}
 				},
 				{
@@ -385,7 +391,8 @@
 							"path": [
 								"sedes"
 							]
-						}
+						},
+						"description": "POST /sedes\nRol: admin.\nBody (JSON): nombre, direccion, telefono.\nRespuestas:\n- 201 ok, datos: { id }\n- 403 rol no autorizado\n- 500 error al crear sede"
 					}
 				},
 				{
@@ -417,7 +424,8 @@
 							"path": [
 								"sedes"
 							]
-						}
+						},
+						"description": "GET /sedes\nRol: admin.\nParámetros: ninguno.\nRespuestas:\n- 200 ok, datos: listado de sedes { id, nombre, direccion, telefono }\n- 403 rol no autorizado"
 					}
 				},
 				{
@@ -458,7 +466,8 @@
 								"sedes",
 								"{{id_sede}}"
 							]
-						}
+						},
+						"description": "PUT /sedes/:id\nRol: admin.\nParámetros de ruta: id (id de la sede).\nBody (JSON): nombre, direccion, telefono.\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 sede no encontrada"
 					}
 				},
 				{
@@ -492,7 +501,8 @@
 								"sedes",
 								"1"
 							]
-						}
+						},
+						"description": "DELETE /sedes/:id\nRol: admin.\nParámetros de ruta: id (id de la sede).\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 sede no encontrada\n- 409 no se puede eliminar: tiene médicos/operadores asociados, o agenda asociada"
 					}
 				},
 				{
@@ -525,7 +535,8 @@
 								"sedes",
 								"{{id_sede}}"
 							]
-						}
+						},
+						"description": "DELETE /sedes/:id\nRol: admin.\nParámetros de ruta: id (id de la sede).\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 sede no encontrada\n- 409 no se puede eliminar: tiene médicos/operadores asociados, o agenda asociada"
 					}
 				}
 			]
@@ -572,7 +583,8 @@
 							"path": [
 								"especialidades"
 							]
-						}
+						},
+						"description": "POST /especialidades\nRol: admin.\nBody (JSON): descripcion (obligatorio).\nRespuestas:\n- 201 ok, datos: { id }\n- 403 rol no autorizado\n- 500 error al crear especialidad"
 					}
 				},
 				{
@@ -612,7 +624,8 @@
 							"path": [
 								"especialidades"
 							]
-						}
+						},
+						"description": "POST /especialidades\nRol: admin.\nBody (JSON): descripcion (obligatorio).\nRespuestas:\n- 201 ok, datos: { id }\n- 403 rol no autorizado\n- 500 error al crear especialidad"
 					}
 				},
 				{
@@ -644,7 +657,8 @@
 							"path": [
 								"especialidades"
 							]
-						}
+						},
+						"description": "GET /especialidades\nRol: admin.\nParámetros: ninguno.\nRespuestas:\n- 200 ok, datos: listado de especialidades { id, descripcion }\n- 403 rol no autorizado"
 					}
 				},
 				{
@@ -685,7 +699,8 @@
 								"especialidades",
 								"{{id_especialidad}}"
 							]
-						}
+						},
+						"description": "PUT /especialidades/:id\nRol: admin.\nParámetros de ruta: id (id de la especialidad).\nBody (JSON): descripcion.\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 especialidad no encontrada"
 					}
 				},
 				{
@@ -719,7 +734,8 @@
 								"especialidades",
 								"1"
 							]
-						}
+						},
+						"description": "DELETE /especialidades/:id\nRol: admin.\nParámetros de ruta: id (id de la especialidad).\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 especialidad no encontrada\n- 409 no se puede eliminar: tiene médicos asociados"
 					}
 				},
 				{
@@ -752,7 +768,8 @@
 								"especialidades",
 								"{{id_especialidad}}"
 							]
-						}
+						},
+						"description": "DELETE /especialidades/:id\nRol: admin.\nParámetros de ruta: id (id de la especialidad).\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 especialidad no encontrada\n- 409 no se puede eliminar: tiene médicos asociados"
 					}
 				}
 			]
@@ -799,7 +816,8 @@
 							"path": [
 								"coberturas"
 							]
-						}
+						},
+						"description": "POST /coberturas\nRol: admin.\nBody (JSON): nombre (obligatorio).\nRespuestas:\n- 201 ok, datos: { id }\n- 403 rol no autorizado\n- 500 error al crear cobertura"
 					}
 				},
 				{
@@ -839,7 +857,8 @@
 							"path": [
 								"coberturas"
 							]
-						}
+						},
+						"description": "POST /coberturas\nRol: admin.\nBody (JSON): nombre (obligatorio).\nRespuestas:\n- 201 ok, datos: { id }\n- 403 rol no autorizado\n- 500 error al crear cobertura"
 					}
 				},
 				{
@@ -880,7 +899,8 @@
 								"coberturas",
 								"{{id_cobertura}}"
 							]
-						}
+						},
+						"description": "PUT /coberturas/:id\nRol: admin.\nParámetros de ruta: id (id de la cobertura).\nBody (JSON): nombre.\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 cobertura no encontrada"
 					}
 				},
 				{
@@ -914,7 +934,8 @@
 								"coberturas",
 								"1"
 							]
-						}
+						},
+						"description": "DELETE /coberturas/:id\nRol: admin.\nParámetros de ruta: id (id de la cobertura).\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 cobertura no encontrada\n- 409 no se puede eliminar: tiene usuarios asociados"
 					}
 				},
 				{
@@ -947,7 +968,8 @@
 								"coberturas",
 								"{{id_cobertura}}"
 							]
-						}
+						},
+						"description": "DELETE /coberturas/:id\nRol: admin.\nParámetros de ruta: id (id de la cobertura).\nRespuestas:\n- 200 ok\n- 403 rol no autorizado\n- 404 cobertura no encontrada\n- 409 no se puede eliminar: tiene usuarios asociados"
 					}
 				}
 			]
@@ -994,7 +1016,8 @@
 							"path": [
 								"agenda"
 							]
-						}
+						},
+						"description": "POST /agenda\nRol: medico, operador. Un médico solo puede dar de alta agenda propia (id_medico debe coincidir con su id).\nBody (JSON): hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede (todos obligatorios).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos / el médico, la especialidad o la sede indicados no existen\n- 403 un médico solo puede gestionar su propia agenda\n- 500 error al crear agenda"
 					}
 				},
 				{
@@ -1034,7 +1057,8 @@
 							"path": [
 								"agenda"
 							]
-						}
+						},
+						"description": "POST /agenda\nRol: medico, operador. Un médico solo puede dar de alta agenda propia (id_medico debe coincidir con su id).\nBody (JSON): hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede (todos obligatorios).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos / el médico, la especialidad o la sede indicados no existen\n- 403 un médico solo puede gestionar su propia agenda\n- 500 error al crear agenda"
 					}
 				},
 				{
@@ -1074,7 +1098,8 @@
 							"path": [
 								"agenda"
 							]
-						}
+						},
+						"description": "POST /agenda\nRol: medico, operador. Un médico solo puede dar de alta agenda propia (id_medico debe coincidir con su id).\nBody (JSON): hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede (todos obligatorios).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos / el médico, la especialidad o la sede indicados no existen\n- 403 un médico solo puede gestionar su propia agenda\n- 500 error al crear agenda"
 					}
 				},
 				{
@@ -1114,7 +1139,8 @@
 							"path": [
 								"agenda"
 							]
-						}
+						},
+						"description": "POST /agenda\nRol: medico, operador. Un médico solo puede dar de alta agenda propia (id_medico debe coincidir con su id).\nBody (JSON): hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede (todos obligatorios).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos / el médico, la especialidad o la sede indicados no existen\n- 403 un médico solo puede gestionar su propia agenda\n- 500 error al crear agenda"
 					}
 				},
 				{
@@ -1160,7 +1186,8 @@
 									"value": "2026-09-01"
 								}
 							]
-						}
+						},
+						"description": "GET /agenda\nRol: medico, operador, paciente. Un médico ve solo su propia agenda (ignora id_medico del query); operador/paciente pueden filtrar libremente.\nParámetros de query (todos opcionales): id_medico, id_sede, id_especialidad, fecha.\nRespuestas:\n- 200 ok, datos: listado de agenda { id, hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede }"
 					}
 				},
 				{
@@ -1197,17 +1224,18 @@
 							"path": [
 								"agenda"
 							]
-						}
+						},
+						"description": "GET /agenda\nRol: medico, operador, paciente. Un médico ve solo su propia agenda (ignora id_medico del query); operador/paciente pueden filtrar libremente.\nParámetros de query (todos opcionales): id_medico, id_sede, id_especialidad, fecha.\nRespuestas:\n- 200 ok, datos: listado de agenda { id, hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede }"
 					}
 				},
 				{
-					"name": "Agenda - Listado (paciente sin acceso -> 403)",
+					"name": "Agenda - Listado (paciente, para elegir turno)",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('status 403', function () { pm.response.to.have.status(403); });"
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
 								],
 								"type": "text/javascript"
 							}
@@ -1229,7 +1257,8 @@
 							"path": [
 								"agenda"
 							]
-						}
+						},
+						"description": "GET /agenda\nRol: medico, operador, paciente. Un médico ve solo su propia agenda (ignora id_medico del query); operador/paciente pueden filtrar libremente.\nParámetros de query (todos opcionales): id_medico, id_sede, id_especialidad, fecha.\nRespuestas:\n- 200 ok, datos: listado de agenda { id, hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede }"
 					}
 				},
 				{
@@ -1270,7 +1299,8 @@
 								"agenda",
 								"{{id_agenda}}"
 							]
-						}
+						},
+						"description": "PUT /agenda/:id\nRol: medico, operador. Un médico solo puede modificar agenda propia.\nParámetros de ruta: id (id del registro de agenda).\nBody (JSON, todos opcionales): hora_entrada, hora_salida, fecha, id_medico, id_especialidad, id_sede.\nRespuestas:\n- 200 ok\n- 400 el médico, la especialidad o la sede indicados no existen\n- 403 un médico solo puede gestionar su propia agenda\n- 404 registro de agenda no encontrado"
 					}
 				},
 				{
@@ -1304,7 +1334,8 @@
 								"agenda",
 								"2"
 							]
-						}
+						},
+						"description": "DELETE /agenda/:id\nRol: medico, operador. Un médico solo puede eliminar agenda propia.\nParámetros de ruta: id (id del registro de agenda).\nRespuestas:\n- 200 ok\n- 403 un médico solo puede gestionar su propia agenda\n- 404 registro de agenda no encontrado\n- 409 no se puede eliminar: tiene turnos asociados"
 					}
 				},
 				{
@@ -1337,7 +1368,8 @@
 								"agenda",
 								"{{id_agenda}}"
 							]
-						}
+						},
+						"description": "DELETE /agenda/:id\nRol: medico, operador. Un médico solo puede eliminar agenda propia.\nParámetros de ruta: id (id del registro de agenda).\nRespuestas:\n- 200 ok\n- 403 un médico solo puede gestionar su propia agenda\n- 404 registro de agenda no encontrado\n- 409 no se puede eliminar: tiene turnos asociados"
 					}
 				}
 			]
@@ -1383,6 +1415,48 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"21:00\",\n  \"nota\": \"Fuera del horario de agenda\"\n}"
+						},
+						"description": "POST /turno\nRol: paciente, operador. Si el rol es paciente, id_paciente sale del token; si es operador, debe mandar dni_paciente en el body. La cobertura se toma automáticamente de la del paciente.\nBody (JSON): id_agenda, hora, nota (obligatorios, nota máx. 40 caracteres); dni_paciente (obligatorio solo si el rol es operador).\nValidaciones: la hora debe entrar en el rango de la agenda (duración fija de 30 min), no debe superponerse con otro turno confirmado de esa misma agenda, y el médico no puede quedar con turnos en más de 2 sedes el mismo día (con un mínimo de 30 min entre sedes distintas).\nRespuestas:\n- 201 ok, datos: { id } (genera notificación 'turno_confirmado' al paciente)\n- 400 faltan campos requeridos / la nota no puede superar los 40 caracteres / dni_paciente es obligatorio\n- 404 agenda no encontrada / paciente no encontrado\n- 409 horario fuera de rango / se superpone con otro turno / más de 2 sedes el mismo día / menos de 30 min entre sedes\n- 500 error al crear turno"
+					}
+				},
+				{
+					"name": "Turno - Alta (paciente) nota supera 40 caracteres -> 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 400', function () { pm.response.to.have.status(400); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"description": "POST /turno\nRol: paciente, operador. Si el rol es paciente, id_paciente sale del token; si es operador, debe mandar dni_paciente en el body. La cobertura se toma automáticamente de la del paciente.\nBody (JSON): id_agenda, hora, nota (obligatorios, nota máx. 40 caracteres); dni_paciente (obligatorio solo si el rol es operador).\nValidaciones: la hora debe entrar en el rango de la agenda (duración fija de 30 min), no debe superponerse con otro turno confirmado de esa misma agenda, y el médico no puede quedar con turnos en más de 2 sedes el mismo día (con un mínimo de 30 min entre sedes distintas).\nRespuestas:\n- 201 ok, datos: { id } (genera notificación 'turno_confirmado' al paciente)\n- 400 faltan campos requeridos / la nota no puede superar los 40 caracteres / dni_paciente es obligatorio\n- 404 agenda no encontrada / paciente no encontrado\n- 409 horario fuera de rango / se superpone con otro turno / más de 2 sedes el mismo día / menos de 30 min entre sedes\n- 500 error al crear turno",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"10:00\",\n  \"nota\": \"Esta nota tiene a propósito más de cuarenta caracteres\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/turno",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"turno"
+							]
 						}
 					}
 				},
@@ -1425,7 +1499,8 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"16:00\",\n  \"nota\": \"Consulta de rutina\"\n}"
-						}
+						},
+						"description": "POST /turno\nRol: paciente, operador. Si el rol es paciente, id_paciente sale del token; si es operador, debe mandar dni_paciente en el body. La cobertura se toma automáticamente de la del paciente.\nBody (JSON): id_agenda, hora, nota (obligatorios, nota máx. 40 caracteres); dni_paciente (obligatorio solo si el rol es operador).\nValidaciones: la hora debe entrar en el rango de la agenda (duración fija de 30 min), no debe superponerse con otro turno confirmado de esa misma agenda, y el médico no puede quedar con turnos en más de 2 sedes el mismo día (con un mínimo de 30 min entre sedes distintas).\nRespuestas:\n- 201 ok, datos: { id } (genera notificación 'turno_confirmado' al paciente)\n- 400 faltan campos requeridos / la nota no puede superar los 40 caracteres / dni_paciente es obligatorio\n- 404 agenda no encontrada / paciente no encontrado\n- 409 horario fuera de rango / se superpone con otro turno / más de 2 sedes el mismo día / menos de 30 min entre sedes\n- 500 error al crear turno"
 					}
 				},
 				{
@@ -1465,7 +1540,8 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"16:15\",\n  \"nota\": \"Se superpone con el anterior\"\n}"
-						}
+						},
+						"description": "POST /turno\nRol: paciente, operador. Si el rol es paciente, id_paciente sale del token; si es operador, debe mandar dni_paciente en el body. La cobertura se toma automáticamente de la del paciente.\nBody (JSON): id_agenda, hora, nota (obligatorios, nota máx. 40 caracteres); dni_paciente (obligatorio solo si el rol es operador).\nValidaciones: la hora debe entrar en el rango de la agenda (duración fija de 30 min), no debe superponerse con otro turno confirmado de esa misma agenda, y el médico no puede quedar con turnos en más de 2 sedes el mismo día (con un mínimo de 30 min entre sedes distintas).\nRespuestas:\n- 201 ok, datos: { id } (genera notificación 'turno_confirmado' al paciente)\n- 400 faltan campos requeridos / la nota no puede superar los 40 caracteres / dni_paciente es obligatorio\n- 404 agenda no encontrada / paciente no encontrado\n- 409 horario fuera de rango / se superpone con otro turno / más de 2 sedes el mismo día / menos de 30 min entre sedes\n- 500 error al crear turno"
 					}
 				},
 				{
@@ -1505,7 +1581,8 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"18:00\"\n}"
-						}
+						},
+						"description": "POST /turno\nRol: paciente, operador. Si el rol es paciente, id_paciente sale del token; si es operador, debe mandar dni_paciente en el body. La cobertura se toma automáticamente de la del paciente.\nBody (JSON): id_agenda, hora, nota (obligatorios, nota máx. 40 caracteres); dni_paciente (obligatorio solo si el rol es operador).\nValidaciones: la hora debe entrar en el rango de la agenda (duración fija de 30 min), no debe superponerse con otro turno confirmado de esa misma agenda, y el médico no puede quedar con turnos en más de 2 sedes el mismo día (con un mínimo de 30 min entre sedes distintas).\nRespuestas:\n- 201 ok, datos: { id } (genera notificación 'turno_confirmado' al paciente)\n- 400 faltan campos requeridos / la nota no puede superar los 40 caracteres / dni_paciente es obligatorio\n- 404 agenda no encontrada / paciente no encontrado\n- 409 horario fuera de rango / se superpone con otro turno / más de 2 sedes el mismo día / menos de 30 min entre sedes\n- 500 error al crear turno"
 					}
 				},
 				{
@@ -1546,8 +1623,9 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"16:30\",\n  \"nota\": \"Turno para probar cancelación por operador\"\n}"
-						}
+							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"16:30\",\n  \"nota\": \"Turno para cancelar (operador)\"\n}"
+						},
+						"description": "POST /turno\nRol: paciente, operador. Si el rol es paciente, id_paciente sale del token; si es operador, debe mandar dni_paciente en el body. La cobertura se toma automáticamente de la del paciente.\nBody (JSON): id_agenda, hora, nota (obligatorios, nota máx. 40 caracteres); dni_paciente (obligatorio solo si el rol es operador).\nValidaciones: la hora debe entrar en el rango de la agenda (duración fija de 30 min), no debe superponerse con otro turno confirmado de esa misma agenda, y el médico no puede quedar con turnos en más de 2 sedes el mismo día (con un mínimo de 30 min entre sedes distintas).\nRespuestas:\n- 201 ok, datos: { id } (genera notificación 'turno_confirmado' al paciente)\n- 400 faltan campos requeridos / la nota no puede superar los 40 caracteres / dni_paciente es obligatorio\n- 404 agenda no encontrada / paciente no encontrado\n- 409 horario fuera de rango / se superpone con otro turno / más de 2 sedes el mismo día / menos de 30 min entre sedes\n- 500 error al crear turno"
 					}
 				},
 				{
@@ -1589,7 +1667,8 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_agenda\": 2,\n  \"hora\": \"17:00\",\n  \"nota\": \"Turno cargado por el operador\",\n  \"dni_paciente\": \"30111222\"\n}"
-						}
+						},
+						"description": "POST /turno\nRol: paciente, operador. Si el rol es paciente, id_paciente sale del token; si es operador, debe mandar dni_paciente en el body. La cobertura se toma automáticamente de la del paciente.\nBody (JSON): id_agenda, hora, nota (obligatorios, nota máx. 40 caracteres); dni_paciente (obligatorio solo si el rol es operador).\nValidaciones: la hora debe entrar en el rango de la agenda (duración fija de 30 min), no debe superponerse con otro turno confirmado de esa misma agenda, y el médico no puede quedar con turnos en más de 2 sedes el mismo día (con un mínimo de 30 min entre sedes distintas).\nRespuestas:\n- 201 ok, datos: { id } (genera notificación 'turno_confirmado' al paciente)\n- 400 faltan campos requeridos / la nota no puede superar los 40 caracteres / dni_paciente es obligatorio\n- 404 agenda no encontrada / paciente no encontrado\n- 409 horario fuera de rango / se superpone con otro turno / más de 2 sedes el mismo día / menos de 30 min entre sedes\n- 500 error al crear turno"
 					}
 				},
 				{
@@ -1627,7 +1706,8 @@
 							"path": [
 								"turno"
 							]
-						}
+						},
+						"description": "GET /turno\nRol: paciente, medico, operador. Comportamiento según rol: paciente ve sus propios turnos (ordenados del más próximo al menos próximo, sin filtro de fecha); medico y operador requieren query fecha y ven, respectivamente, sus turnos programados o los de su sede para esa fecha.\nParámetros de query: fecha (obligatoria para medico y operador; ignorada para paciente).\nRespuestas:\n- 200 ok, datos: listado de turnos\n- 400 fecha es obligatoria (medico/operador sin fecha)\n- 403 rol no autorizado"
 					}
 				},
 				{
@@ -1659,7 +1739,8 @@
 							"path": [
 								"turno"
 							]
-						}
+						},
+						"description": "GET /turno\nRol: paciente, medico, operador. Comportamiento según rol: paciente ve sus propios turnos (ordenados del más próximo al menos próximo, sin filtro de fecha); medico y operador requieren query fecha y ven, respectivamente, sus turnos programados o los de su sede para esa fecha.\nParámetros de query: fecha (obligatoria para medico y operador; ignorada para paciente).\nRespuestas:\n- 200 ok, datos: listado de turnos\n- 400 fecha es obligatoria (medico/operador sin fecha)\n- 403 rol no autorizado"
 					}
 				},
 				{
@@ -1702,7 +1783,8 @@
 									"value": "2025-10-20"
 								}
 							]
-						}
+						},
+						"description": "GET /turno\nRol: paciente, medico, operador. Comportamiento según rol: paciente ve sus propios turnos (ordenados del más próximo al menos próximo, sin filtro de fecha); medico y operador requieren query fecha y ven, respectivamente, sus turnos programados o los de su sede para esa fecha.\nParámetros de query: fecha (obligatoria para medico y operador; ignorada para paciente).\nRespuestas:\n- 200 ok, datos: listado de turnos\n- 400 fecha es obligatoria (medico/operador sin fecha)\n- 403 rol no autorizado"
 					}
 				},
 				{
@@ -1744,7 +1826,8 @@
 									"value": "2025-10-20"
 								}
 							]
-						}
+						},
+						"description": "GET /turno\nRol: paciente, medico, operador. Comportamiento según rol: paciente ve sus propios turnos (ordenados del más próximo al menos próximo, sin filtro de fecha); medico y operador requieren query fecha y ven, respectivamente, sus turnos programados o los de su sede para esa fecha.\nParámetros de query: fecha (obligatoria para medico y operador; ignorada para paciente).\nRespuestas:\n- 200 ok, datos: listado de turnos\n- 400 fecha es obligatoria (medico/operador sin fecha)\n- 403 rol no autorizado"
 					}
 				},
 				{
@@ -1778,7 +1861,8 @@
 								"{{id_turno}}",
 								"cancelar"
 							]
-						}
+						},
+						"description": "PATCH /turno/:id/cancelar\nRol: paciente (solo turno propio), operador y medico (solo turnos de su propia sede).\nParámetros de ruta: id (id del turno).\nRespuestas:\n- 200 ok (cambia estado a 'cancelado' y genera notificación 'turno_cancelado' al paciente y al médico)\n- 403 no puede cancelar turnos de otro paciente / solo puede cancelar turnos de su propia sede\n- 404 turno no encontrado\n- 409 no se puede cancelar un turno que no está en estado 'confirmado'"
 					}
 				},
 				{
@@ -1812,7 +1896,8 @@
 								"{{id_turno}}",
 								"cancelar"
 							]
-						}
+						},
+						"description": "PATCH /turno/:id/cancelar\nRol: paciente (solo turno propio), operador y medico (solo turnos de su propia sede).\nParámetros de ruta: id (id del turno).\nRespuestas:\n- 200 ok (cambia estado a 'cancelado' y genera notificación 'turno_cancelado' al paciente y al médico)\n- 403 no puede cancelar turnos de otro paciente / solo puede cancelar turnos de su propia sede\n- 404 turno no encontrado\n- 409 no se puede cancelar un turno que no está en estado 'confirmado'"
 					}
 				},
 				{
@@ -1846,7 +1931,8 @@
 								"{{id_turno_sede}}",
 								"cancelar"
 							]
-						}
+						},
+						"description": "PATCH /turno/:id/cancelar\nRol: paciente (solo turno propio), operador y medico (solo turnos de su propia sede).\nParámetros de ruta: id (id del turno).\nRespuestas:\n- 200 ok (cambia estado a 'cancelado' y genera notificación 'turno_cancelado' al paciente y al médico)\n- 403 no puede cancelar turnos de otro paciente / solo puede cancelar turnos de su propia sede\n- 404 turno no encontrado\n- 409 no se puede cancelar un turno que no está en estado 'confirmado'"
 					}
 				},
 				{
@@ -1880,7 +1966,8 @@
 								"{{id_turno_atender}}",
 								"atender"
 							]
-						}
+						},
+						"description": "PATCH /turno/:id/atender\nRol: medico (solo turnos propios).\nParámetros de ruta: id (id del turno).\nRespuestas:\n- 200 ok (cambia estado a 'atendido' y genera notificación 'turno_atendido' al paciente)\n- 403 solo puede atender sus propios turnos\n- 404 turno no encontrado\n- 409 no se puede atender un turno que no está en estado 'confirmado'"
 					}
 				},
 				{
@@ -1914,7 +2001,8 @@
 								"{{id_turno_atender}}",
 								"atender"
 							]
-						}
+						},
+						"description": "PATCH /turno/:id/atender\nRol: medico (solo turnos propios).\nParámetros de ruta: id (id del turno).\nRespuestas:\n- 200 ok (cambia estado a 'atendido' y genera notificación 'turno_atendido' al paciente)\n- 403 solo puede atender sus propios turnos\n- 404 turno no encontrado\n- 409 no se puede atender un turno que no está en estado 'confirmado'"
 					}
 				},
 				{
@@ -1948,7 +2036,8 @@
 								"{{id_turno_atender}}",
 								"atender"
 							]
-						}
+						},
+						"description": "PATCH /turno/:id/atender\nRol: medico (solo turnos propios).\nParámetros de ruta: id (id del turno).\nRespuestas:\n- 200 ok (cambia estado a 'atendido' y genera notificación 'turno_atendido' al paciente)\n- 403 solo puede atender sus propios turnos\n- 404 turno no encontrado\n- 409 no se puede atender un turno que no está en estado 'confirmado'"
 					}
 				}
 			]
@@ -1996,7 +2085,8 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_turno\": {{id_turno_atender}},\n  \"diagnostico\": \"Control sin hallazgos\",\n  \"tratamiento\": \"Ninguno\",\n  \"observaciones\": \"Paciente estable\"\n}"
-						}
+						},
+						"description": "POST /historial-clinico\nRol: medico. El turno debe pertenecer al médico logueado y estar en estado 'atendido'; un turno solo puede tener un historial asociado.\nBody (JSON): id_turno, diagnostico (obligatorios), tratamiento, observaciones (opcionales).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos\n- 403 solo puede registrar historial de sus propios turnos\n- 404 turno no encontrado\n- 409 el turno debe estar atendido / el turno ya tiene historial registrado"
 					}
 				},
 				{
@@ -2036,7 +2126,8 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_turno\": {{id_turno_atender}},\n  \"diagnostico\": \"Otro diagnóstico\"\n}"
-						}
+						},
+						"description": "POST /historial-clinico\nRol: medico. El turno debe pertenecer al médico logueado y estar en estado 'atendido'; un turno solo puede tener un historial asociado.\nBody (JSON): id_turno, diagnostico (obligatorios), tratamiento, observaciones (opcionales).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos\n- 403 solo puede registrar historial de sus propios turnos\n- 404 turno no encontrado\n- 409 el turno debe estar atendido / el turno ya tiene historial registrado"
 					}
 				},
 				{
@@ -2076,7 +2167,8 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"id_turno\": {{id_turno_sede}},\n  \"diagnostico\": \"No debería poder cargarse\"\n}"
-						}
+						},
+						"description": "POST /historial-clinico\nRol: medico. El turno debe pertenecer al médico logueado y estar en estado 'atendido'; un turno solo puede tener un historial asociado.\nBody (JSON): id_turno, diagnostico (obligatorios), tratamiento, observaciones (opcionales).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos\n- 403 solo puede registrar historial de sus propios turnos\n- 404 turno no encontrado\n- 409 el turno debe estar atendido / el turno ya tiene historial registrado"
 					},
 					"description": "id_turno_sede quedó en estado cancelado, nunca fue atendido."
 				},
@@ -2111,7 +2203,8 @@
 								"paciente",
 								"{{id_paciente_propio}}"
 							]
-						}
+						},
+						"description": "GET /historial-clinico/paciente/:id_paciente\nRol: paciente (solo su propio historial completo), medico (solo los registros de turnos que él mismo atendió, para cualquier paciente).\nParámetros de ruta: id_paciente.\nRespuestas:\n- 200 ok, datos: listado del historial clínico\n- 403 un paciente no puede consultar el historial de otro paciente"
 					}
 				},
 				{
@@ -2145,7 +2238,8 @@
 								"paciente",
 								"999"
 							]
-						}
+						},
+						"description": "GET /historial-clinico/paciente/:id_paciente\nRol: paciente (solo su propio historial completo), medico (solo los registros de turnos que él mismo atendió, para cualquier paciente).\nParámetros de ruta: id_paciente.\nRespuestas:\n- 200 ok, datos: listado del historial clínico\n- 403 un paciente no puede consultar el historial de otro paciente"
 					}
 				},
 				{
@@ -2184,7 +2278,8 @@
 								"paciente",
 								"{{id_paciente_propio}}"
 							]
-						}
+						},
+						"description": "GET /historial-clinico/paciente/:id_paciente\nRol: paciente (solo su propio historial completo), medico (solo los registros de turnos que él mismo atendió, para cualquier paciente).\nParámetros de ruta: id_paciente.\nRespuestas:\n- 200 ok, datos: listado del historial clínico\n- 403 un paciente no puede consultar el historial de otro paciente"
 					}
 				}
 			]
@@ -2229,7 +2324,8 @@
 							"path": [
 								"notificaciones"
 							]
-						}
+						},
+						"description": "GET /notificaciones\nRol: cualquier usuario autenticado. Devuelve las notificaciones propias, de más reciente a más antigua.\nParámetros: ninguno.\nRespuestas:\n- 200 ok, datos: listado de notificaciones { id, tipo, mensaje, leida, fecha }"
 					}
 				},
 				{
@@ -2263,7 +2359,8 @@
 								"{{id_notificacion}}",
 								"leida"
 							]
-						}
+						},
+						"description": "PATCH /notificaciones/:id/leida\nRol: cualquier usuario autenticado, solo sobre notificaciones propias.\nParámetros de ruta: id (id de la notificación).\nRespuestas:\n- 200 ok (marca leida = 1)\n- 403 no puede modificar notificaciones de otro usuario\n- 404 notificación no encontrada"
 					}
 				},
 				{
@@ -2297,7 +2394,8 @@
 								"{{id_notificacion}}",
 								"leida"
 							]
-						}
+						},
+						"description": "PATCH /notificaciones/:id/leida\nRol: cualquier usuario autenticado, solo sobre notificaciones propias.\nParámetros de ruta: id (id de la notificación).\nRespuestas:\n- 200 ok (marca leida = 1)\n- 403 no puede modificar notificaciones de otro usuario\n- 404 notificación no encontrada"
 					}
 				}
 			]
@@ -2315,7 +2413,8 @@
 					"path": [
 						"health"
 					]
-				}
+				},
+				"description": "GET /health\nRol: público (sin autenticación).\nParámetros: ninguno.\nBody: no aplica.\nRespuestas:\n- 200 ok: verificación de que el servidor está levantado."
 			}
 		},
 		{
@@ -2331,7 +2430,8 @@
 					"path": [
 						"coberturas"
 					]
-				}
+				},
+				"description": "GET /coberturas\nRol: público (sin autenticación).\nParámetros: ninguno.\nRespuestas:\n- 200 ok, datos: listado de coberturas { id, nombre }"
 			}
 		},
 		{
@@ -2357,7 +2457,8 @@
 						"auth",
 						"registro"
 					]
-				}
+				},
+				"description": "POST /auth/registro\nRol: público (sin autenticación). Crea siempre un usuario con rol 'paciente'.\nParámetros: ninguno.\nBody (JSON): nombre, apellido, dni, email, password, fecha_nacimiento, telefono, id_cobertura (todos obligatorios).\nRespuestas:\n- 201 ok, datos: { id }\n- 400 faltan campos requeridos / la cobertura indicada no existe\n- 409 el DNI ya está registrado / el email ya está registrado\n- 500 error al registrar usuario"
 			}
 		},
 		{
@@ -2383,7 +2484,8 @@
 						"auth",
 						"login"
 					]
-				}
+				},
+				"description": "POST /auth/login\nRol: público (sin autenticación).\nParámetros: ninguno.\nBody (JSON): dni, password (obligatorios).\nRespuestas:\n- 200 ok, datos: { token } (JWT, expira en 8h; incluye id, rol e id_sede)\n- 400 dni y contraseña son requeridos\n- 401 credenciales inválidas\n- 500 error al iniciar sesión"
 			}
 		},
 		{
@@ -2416,7 +2518,8 @@
 						"auth",
 						"perfil"
 					]
-				}
+				},
+				"description": "GET /auth/perfil\nRol: paciente.\nHeaders: Authorization: Bearer {token}.\nParámetros: ninguno.\nBody: no aplica.\nRespuestas:\n- 200 ok, datos: perfil del usuario autenticado (id, nombre, apellido, dni, email, fecha_nacimiento, telefono, rol, id_sede, id_cobertura)\n- 401 token no proporcionado / token inválido o vencido\n- 403 no tiene permisos para acceder a este recurso (rol distinto de paciente)\n- 404 usuario no encontrado"
 			}
 		},
 		{
@@ -2444,7 +2547,8 @@
 						"auth",
 						"perfil"
 					]
-				}
+				},
+				"description": "GET /auth/perfil\nRol: paciente.\nHeaders: Authorization: Bearer {token}.\nParámetros: ninguno.\nBody: no aplica.\nRespuestas:\n- 200 ok, datos: perfil del usuario autenticado (id, nombre, apellido, dni, email, fecha_nacimiento, telefono, rol, id_sede, id_cobertura)\n- 401 token no proporcionado / token inválido o vencido\n- 403 no tiene permisos para acceder a este recurso (rol distinto de paciente)\n- 404 usuario no encontrado"
 			}
 		},
 		{
@@ -2477,8 +2581,331 @@
 						"auth",
 						"perfil"
 					]
-				}
+				},
+				"description": "GET /auth/perfil\nRol: paciente.\nHeaders: Authorization: Bearer {token}.\nParámetros: ninguno.\nBody: no aplica.\nRespuestas:\n- 200 ok, datos: perfil del usuario autenticado (id, nombre, apellido, dni, email, fecha_nacimiento, telefono, rol, id_sede, id_cobertura)\n- 401 token no proporcionado / token inválido o vencido\n- 403 no tiene permisos para acceder a este recurso (rol distinto de paciente)\n- 404 usuario no encontrado"
 			}
+		},
+		{
+			"name": "Auditoría (admin)",
+			"item": [
+				{
+					"name": "Auditoría - Listado (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_admin}}"
+							}
+						],
+						"description": "GET /auditoria\nRol: admin.\nParámetros de query (todos opcionales): id_usuario, entidad, fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: listado de logs { id, id_usuario, accion, entidad, id_entidad, detalle, fecha }, de más reciente a más antigua\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/auditoria",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auditoria"
+							],
+							"query": []
+						}
+					}
+				},
+				{
+					"name": "Auditoría - Listado filtrado (entidad + rango de fechas)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_admin}}"
+							}
+						],
+						"description": "GET /auditoria\nRol: admin.\nParámetros de query (todos opcionales): id_usuario, entidad, fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: listado de logs { id, id_usuario, accion, entidad, id_entidad, detalle, fecha }, de más reciente a más antigua\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/auditoria?entidad=sede&fecha_desde=2025-01-01&fecha_hasta=2026-12-31",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auditoria"
+							],
+							"query": []
+						}
+					}
+				},
+				{
+					"name": "Auditoría - Listado (rol no autorizado, paciente) -> 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 403', function () { pm.response.to.have.status(403); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"description": "GET /auditoria\nRol: admin.\nParámetros de query (todos opcionales): id_usuario, entidad, fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: listado de logs { id, id_usuario, accion, entidad, id_entidad, detalle, fecha }, de más reciente a más antigua\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/auditoria",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auditoria"
+							],
+							"query": []
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reportes y estadísticas (admin)",
+			"item": [
+				{
+					"name": "Reportes - Turnos por especialidad (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_admin}}"
+							}
+						],
+						"description": "GET /reportes/turnos-por-especialidad\nRol: admin.\nParámetros de query (opcionales): fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: [{ id_especialidad, descripcion, cantidad_turnos }], ordenado de mayor a menor cantidad\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/reportes/turnos-por-especialidad",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reportes",
+								"turnos-por-especialidad"
+							],
+							"query": []
+						}
+					}
+				},
+				{
+					"name": "Reportes - Turnos por sede (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_admin}}"
+							}
+						],
+						"description": "GET /reportes/turnos-por-sede\nRol: admin.\nParámetros de query (opcionales): fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: [{ id_sede, nombre, cantidad_turnos }], ordenado de mayor a menor cantidad\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/reportes/turnos-por-sede",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reportes",
+								"turnos-por-sede"
+							],
+							"query": []
+						}
+					}
+				},
+				{
+					"name": "Reportes - Ranking de médicos (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_admin}}"
+							}
+						],
+						"description": "GET /reportes/ranking-medicos\nRol: admin. Cuenta solo turnos en estado 'atendido'.\nParámetros de query (opcionales): fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: [{ id_medico, nombre, apellido, cantidad_turnos_atendidos }], ordenado de mayor a menor\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/reportes/ranking-medicos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reportes",
+								"ranking-medicos"
+							],
+							"query": []
+						}
+					}
+				},
+				{
+					"name": "Reportes - Tasa de cancelación (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_admin}}"
+							}
+						],
+						"description": "GET /reportes/tasa-cancelacion\nRol: admin.\nParámetros de query (opcionales): fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: { total_turnos, turnos_cancelados, tasa_cancelacion }\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/reportes/tasa-cancelacion",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reportes",
+								"tasa-cancelacion"
+							],
+							"query": []
+						}
+					}
+				},
+				{
+					"name": "Reportes - Turnos por especialidad con rango de fechas (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_admin}}"
+							}
+						],
+						"description": "GET /reportes/turnos-por-especialidad\nRol: admin.\nParámetros de query (opcionales): fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: [{ id_especialidad, descripcion, cantidad_turnos }], ordenado de mayor a menor cantidad\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/reportes/turnos-por-especialidad?fecha_desde=2025-01-01&fecha_hasta=2026-12-31",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reportes",
+								"turnos-por-especialidad"
+							],
+							"query": []
+						}
+					}
+				},
+				{
+					"name": "Reportes - Tasa de cancelación (rol no autorizado, médico) -> 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status 403', function () { pm.response.to.have.status(403); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token_medico}}"
+							}
+						],
+						"description": "GET /reportes/tasa-cancelacion\nRol: admin.\nParámetros de query (opcionales): fecha_desde, fecha_hasta.\nRespuestas:\n- 200 ok, datos: { total_turnos, turnos_cancelados, tasa_cancelacion }\n- 403 rol no autorizado",
+						"url": {
+							"raw": "{{base_url}}/reportes/tasa-cancelacion",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reportes",
+								"tasa-cancelacion"
+							],
+							"query": []
+						}
+					}
+				}
+			]
 		}
 	]
 }
