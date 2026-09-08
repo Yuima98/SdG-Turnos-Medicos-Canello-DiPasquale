@@ -146,7 +146,7 @@ async function listarTurnos(req, res) {
   try {
     if (rol === 'paciente') {
       const [rows] = await pool.query(
-        `${SELECT_BASE} WHERE t.id_paciente = ? ORDER BY t.fecha ASC, t.hora ASC`,
+        `${SELECT_BASE} WHERE t.id_paciente = ? ORDER BY ABS(DATEDIFF(t.fecha, CURDATE())) ASC, t.hora ASC`,
         [idUsuario]
       );
       return res.json({ codigo: 200, estado: 'ok', datos: formatearFilas(rows) });

@@ -1,5 +1,4 @@
 const pool = require('../database/db');
-const { registrarAuditoria } = require('../utils/auditoria');
 
 async function altaEspecialidad(req, res) {
   const { descripcion } = req.body;
@@ -8,13 +7,6 @@ async function altaEspecialidad(req, res) {
       'INSERT INTO especialidad (descripcion) VALUES (?)',
       [descripcion]
     );
-    await registrarAuditoria({
-      id_usuario: req.usuario.id,
-      accion: 'ALTA',
-      entidad: 'especialidad',
-      id_entidad: resultado.insertId,
-      detalle: `Alta de especialidad "${descripcion}"`
-    });
     res.status(201).json({ codigo: 201, estado: 'ok', datos: { id: resultado.insertId } });
   } catch (err) {
     console.error(err);
@@ -43,13 +35,6 @@ async function modificarEspecialidad(req, res) {
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ codigo: 404, estado: 'especialidad no encontrada', datos: null });
     }
-    await registrarAuditoria({
-      id_usuario: req.usuario.id,
-      accion: 'MODIFICACION',
-      entidad: 'especialidad',
-      id_entidad: id,
-      detalle: `Modificación de especialidad a "${descripcion}"`
-    });
     res.json({ codigo: 200, estado: 'ok', datos: null });
   } catch (err) {
     console.error(err);
@@ -76,13 +61,6 @@ async function bajaEspecialidad(req, res) {
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ codigo: 404, estado: 'especialidad no encontrada', datos: null });
     }
-    await registrarAuditoria({
-      id_usuario: req.usuario.id,
-      accion: 'BAJA',
-      entidad: 'especialidad',
-      id_entidad: id,
-      detalle: `Baja de especialidad id ${id}`
-    });
     res.json({ codigo: 200, estado: 'ok', datos: null });
   } catch (err) {
     console.error(err);

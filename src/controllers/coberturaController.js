@@ -1,5 +1,4 @@
 const pool = require('../database/db');
-const { registrarAuditoria } = require('../utils/auditoria');
 
 async function listarCoberturas(req, res) {
   try {
@@ -18,13 +17,6 @@ async function altaCobertura(req, res) {
       'INSERT INTO cobertura (nombre) VALUES (?)',
       [nombre]
     );
-    await registrarAuditoria({
-      id_usuario: req.usuario.id,
-      accion: 'ALTA',
-      entidad: 'cobertura',
-      id_entidad: resultado.insertId,
-      detalle: `Alta de cobertura "${nombre}"`
-    });
     res.status(201).json({ codigo: 201, estado: 'ok', datos: { id: resultado.insertId } });
   } catch (err) {
     console.error(err);
@@ -43,13 +35,6 @@ async function modificarCobertura(req, res) {
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ codigo: 404, estado: 'cobertura no encontrada', datos: null });
     }
-    await registrarAuditoria({
-      id_usuario: req.usuario.id,
-      accion: 'MODIFICACION',
-      entidad: 'cobertura',
-      id_entidad: id,
-      detalle: `Modificación de cobertura a "${nombre}"`
-    });
     res.json({ codigo: 200, estado: 'ok', datos: null });
   } catch (err) {
     console.error(err);
@@ -76,13 +61,6 @@ async function bajaCobertura(req, res) {
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ codigo: 404, estado: 'cobertura no encontrada', datos: null });
     }
-    await registrarAuditoria({
-      id_usuario: req.usuario.id,
-      accion: 'BAJA',
-      entidad: 'cobertura',
-      id_entidad: id,
-      detalle: `Baja de cobertura id ${id}`
-    });
     res.json({ codigo: 200, estado: 'ok', datos: null });
   } catch (err) {
     console.error(err);
