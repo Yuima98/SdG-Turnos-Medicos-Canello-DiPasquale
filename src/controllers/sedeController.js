@@ -1,5 +1,6 @@
 
 const pool = require('../database/db');
+const { registrarAuditoria } = require('../utils/auditoria');
 
 async function altaSede(req, res) {
   const { nombre, direccion, telefono } = req.body;
@@ -8,6 +9,13 @@ async function altaSede(req, res) {
       'INSERT INTO sede (nombre, direccion, telefono) VALUES (?, ?, ?)',
       [nombre, direccion, telefono]
     );
+    await registrarAuditoria({
+      id_usuario: req.usuario.id,
+      accion: 'ALTA',
+      entidad: 'sede',
+      id_entidad: resultado.insertId,
+      detalle: `Alta de sede "${nombre}"`
+    });
     res.status(201).json({ codigo: 201, estado: 'ok', datos: { id: resultado.insertId } });
   } catch (err) {
     console.error(err);
@@ -36,6 +44,13 @@ async function modificarSede(req, res) {
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ codigo: 404, estado: 'sede no encontrada', datos: null });
     }
+    await registrarAuditoria({
+      id_usuario: req.usuario.id,
+      accion: 'MODIFICACION',
+      entidad: 'sede',
+      id_entidad: id,
+      detalle: `Modificación de sede a "${nombre}"`
+    });
     res.json({ codigo: 200, estado: 'ok', datos: null });
   } catch (err) {
     console.error(err);
@@ -75,6 +90,13 @@ async function bajaSede(req, res) {
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ codigo: 404, estado: 'sede no encontrada', datos: null });
     }
+    await registrarAuditoria({
+      id_usuario: req.usuario.id,
+      accion: 'BAJA',
+      entidad: 'sede',
+      id_entidad: id,
+      detalle: `Baja de sede id ${id}`
+    });
     res.json({ codigo: 200, estado: 'ok', datos: null });
   } catch (err) {
     console.error(err);

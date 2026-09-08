@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../database/db');
+const { registrarAuditoria } = require('../utils/auditoria');
 
 async function registro(req, res) {
   const { nombre, apellido, dni, email, password, fecha_nacimiento, telefono, id_cobertura } = req.body;
@@ -32,6 +33,14 @@ async function registro(req, res) {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'paciente')`,
       [nombre, apellido, dni, email, passwordHash, fecha_nacimiento, telefono, id_cobertura]
     );
+
+    await registrarAuditoria({
+      id_usuario: resultado.insertId,
+      accion: 'ALTA',
+      entidad: 'usuario',
+      id_entidad: resultado.insertId,
+      detalle: `Alta de paciente ${nombre} ${apellido} (autoregistro)`
+    });
 
     res.status(201).json({ codigo: 201, estado: 'ok', datos: { id: resultado.insertId } });
   } catch (err) {
