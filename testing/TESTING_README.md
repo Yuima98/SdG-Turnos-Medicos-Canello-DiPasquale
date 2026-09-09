@@ -11,7 +11,7 @@
 ```bash
 git clone https://github.com/Yuima98/SdG-Turnos-Medicos-Canello-DiPasquale
 cd SdG-Turnos-Medicos-Canello-DiPasquale
-git checkout entrega-backend-2
+git checkout entrega-backend-4
 npm install
 ```
 
@@ -82,13 +82,13 @@ Respuesta esperada:
 
 Importar la colección incluida en el repo:
 
-- `SdG-Turnos-Medicos_postman_collection.json`
+- `SdG-Turnos-Medicos.postman_collection.json` (dentro de `testing/`)
 
 Es autocontenida: trae sus propios valores por defecto (`base_url`, DNIs, `seed_password`, etc.) como variables de colección, y los tokens de login se guardan ahí mismo (`token`, `token_admin`, `token_medico`, `token_operador`).
 
 Para correr todo de una, usar el **Runner** de Postman sobre la colección completa. El orden ya viene resuelto en la propia colección.
 
-La colección incluye las carpetas de Semana 3 (**Turnos**, **Historial clínico** y **Notificaciones**), que se apoyan en la agenda `id=2` del seed (médico `id=3`, sede `id=1`, fecha `2025-10-20`, 15:00 a 20:00hs) y corren después de "Agenda médica". Casos destacados para el entregable:
+La colección incluye las carpetas de Semana 3 (**Turnos**, **Historial clínico** y **Notificaciones**) y de Semana 4 (**Auditoría** y **Reportes y estadísticas**, ambas rol admin). Las de Semana 3 se apoyan en la agenda `id=2` del seed (médico `id=3`, sede `id=1`, fecha `2025-10-20`, 15:00 a 20:00hs) y corren después de "Agenda médica". Casos destacados para el entregable:
 
 - `Turno - Alta (paciente) horario no disponible -> 409`: turno rechazado por horario fuera de agenda.
 - `Turno - Cancelación (paciente, turno propio)`: cancela un turno y dispara la notificación correspondiente (verificable en la carpeta **Notificaciones**).
