@@ -13,6 +13,8 @@ const notificacionRoutes = require('./routes/notificacionRoutes');
 const auditoriaRoutes = require('./routes/auditoriaRoutes');
 const reporteRoutes = require('./routes/reporteRoutes');
 
+const auditar = require('./middlewares/auditoria');
+
 const app = express();
 app.use(express.json());
 
