@@ -17,6 +17,7 @@ const auditar = require('./middlewares/auditoria');
 
 const app = express();
 app.use(express.json());
+app.use(auditar);
 
 app.get('/health', async (req, res) => {
   try {
