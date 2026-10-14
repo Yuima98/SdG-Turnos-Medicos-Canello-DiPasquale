@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const pool = require('./database/db');
 
 const authRoutes = require('./routes/authRoutes');
@@ -16,6 +17,7 @@ const reporteRoutes = require('./routes/reporteRoutes');
 const auditar = require('./middlewares/auditoria');
 
 const app = express();
+app.use(cors({ origin: 'http://localhost:4200' }));
 app.use(express.json());
 app.use(auditar);
 
